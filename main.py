@@ -2,7 +2,8 @@ import glob
 import json
 import os
 import shutil
-from typing import Callable
+from collections import defaultdict
+from itertools import groupby
 
 import magic
 import typer
@@ -14,32 +15,53 @@ def get_cookiecutter_placeholder(arg) -> str:
     return f"{{{{cookiecutter.{arg}}}}}"
 
 
+def rename_in_paths(
+    root_dir: str, paths: list[str], replacements: list[tuple[str, str]]
+):
+    for path in paths:
+        base_name = os.path.basename(path)
+        for r in replacements:
+            new_base_name = base_name.replace(r[0], get_cookiecutter_placeholder(r[1]))
+            if new_base_name != base_name:
+                new_path = path[: -len(base_name)] + new_base_name
+                os.rename(
+                    os.path.join(root_dir, path), os.path.join(root_dir, new_path)
+                )
+
+
 def replace_in_names(root_dir: str, replacements: list[tuple[str, str]]) -> None:
-    # we are excluding files and folders starting with "."
-    name_predicate: Callable[[str], bool] = lambda x: not x.startswith(".")
+    files_and_folders = glob.glob(os.path.join(root_dir, "**"), recursive=True)
+    files = list(
+        filter(
+            lambda f: bool(f),
+            map(
+                lambda f: f.replace(root_dir, ""),
+                filter(lambda f: os.path.isfile(f), files_and_folders),
+            ),
+        )
+    )
+    dirs = list(
+        filter(
+            lambda f: bool(f),
+            map(
+                lambda f: f.replace(root_dir, ""),
+                filter(lambda f: os.path.isdir(f), files_and_folders),
+            ),
+        )
+    )
 
-    for current_dir, sub_dirs, files in os.walk(root_dir):
-        sub_dirs[:] = list(filter(name_predicate, sub_dirs))
+    files_levels_map = defaultdict(list)
+    for count, items in groupby(files, lambda s: s.count("/")):
+        files_levels_map[count].extend(items)
 
-        # recursively call for subdirectories
-        for sub_dir in sub_dirs:
-            for r in replacements:
-                new_dir_name = sub_dir.replace(r[0], get_cookiecutter_placeholder(r[1]))
-                if new_dir_name != sub_dir:
-                    shutil.move(
-                        os.path.join(current_dir, sub_dir),
-                        os.path.join(current_dir, new_dir_name),
-                    )
+    dir_levels_map = defaultdict(list)
+    for count, items in groupby(dirs, lambda s: s.count("/")):
+        dir_levels_map[count].extend(items)
 
-        # rename files
-        for file in list(filter(name_predicate, files)):
-            for r in replacements:
-                new_file_name = file.replace(r[0], get_cookiecutter_placeholder(r[1]))
-                if new_file_name != file:
-                    shutil.move(
-                        os.path.join(current_dir, file),
-                        os.path.join(current_dir, new_file_name),
-                    )
+    max_level = max([max(files_levels_map.keys()), max(dir_levels_map.keys())])
+    for level in reversed(range(max_level + 1)):
+        rename_in_paths(root_dir, files_levels_map[level], replacements)
+        rename_in_paths(root_dir, dir_levels_map[level], replacements)
 
 
 def move_all_in_subdir(source_dir: str, dest_dir: str) -> None:
@@ -83,9 +105,7 @@ def replace_in_files_content(
 ) -> None:
     files = list(
         filter(
-            lambda x: os.path.isfile(x)
-            and not os.path.basename(x).startswith(".")
-            and is_text_file(x),
+            lambda x: os.path.isfile(x) and is_text_file(x),
             glob.glob(os.path.join(root_dir, "**"), recursive=True),
         )
     )
