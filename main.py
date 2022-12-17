@@ -65,7 +65,7 @@ def replace_in_names(root_dir: str, replacements: list[tuple[str, str]]) -> None
 
 
 def move_all_in_subdir(source_dir: str, dest_dir: str) -> None:
-    for entry in os.listdir(source_dir):
+    for entry in filter(lambda x: x != ".git", os.listdir(source_dir)):
         shutil.move(os.path.join(source_dir, entry), dest_dir)
 
 
