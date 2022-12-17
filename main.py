@@ -81,21 +81,6 @@ def clean(root_folder: str) -> None:
     delete_pattern(os.path.join(root_folder, ".idea/**"))
 
 
-def get_solution_name(root_folder: str) -> str:
-    matches = glob.glob(os.path.join(root_folder, "*.sln"))
-
-    msg_base = "Cannot determine the solution name. {0}"
-
-    if len(matches) > 1:
-        raise Exception(msg_base.format("Multiple solution files found."))
-
-    if len(matches) == 0:
-        raise Exception(msg_base.format("No solution files found."))
-
-    file_name = os.path.basename(matches[0])
-    return file_name[: file_name.rindex(".")]
-
-
 def is_text_file(path) -> bool:
     return magic.from_file(path, mime=True).startswith("text")
 
@@ -128,9 +113,13 @@ def generate_json(root_dir: str, replacements: list[tuple[str, str]]) -> None:
         )
 
 
-def main(root_dir: str) -> None:
-    solution_name = get_solution_name(root_dir)
-
+def main(
+    root_dir: str,
+    placeholder_1_name: str,
+    placeholder_1_value: str,
+    placeholder_2_name: str,
+    placeholder_2_value: str,
+) -> None:
     clean(root_dir)
 
     dest_dir = os.path.join(
@@ -141,8 +130,8 @@ def main(root_dir: str) -> None:
     move_all_in_subdir(root_dir, dest_dir)
 
     replacements = [
-        (solution_name, solution_name_placeholder),
-        ("Customer", "sample_entity_name"),
+        (placeholder_1_value, placeholder_1_name),
+        (placeholder_2_value, placeholder_2_name),
     ]
     replace_in_files_content(dest_dir, replacements)
     replace_in_names(dest_dir, replacements)
