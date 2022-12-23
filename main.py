@@ -120,21 +120,25 @@ def main(
     placeholder_2_name: str,
     placeholder_2_value: str,
 ) -> None:
+    # first of all, clean
     clean(root_dir)
 
+    # move everything one level down in cookiecutter subdirectory
     dest_dir = os.path.join(
         root_dir, f"{get_cookiecutter_placeholder(solution_name_placeholder)}/"
     )
-
     os.mkdir(dest_dir)
     move_all_in_subdir(root_dir, dest_dir)
 
+    # replace cookiecutter placeholders in file contents and file names
     replacements = [
         (placeholder_1_value, placeholder_1_name),
         (placeholder_2_value, placeholder_2_name),
     ]
     replace_in_files_content(dest_dir, replacements)
     replace_in_names(dest_dir, replacements)
+
+    # generate cookiecutter template manifest file
     generate_json(root_dir, replacements)
 
 
