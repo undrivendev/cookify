@@ -3,13 +3,12 @@ name = "cookify"
 version = "0.1.0"
 description = ""
 authors = ["Luca Dalla Valle <luca.dallavalle@outlook.com>"]
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-typer = {extras = ["all"], version = "^0.7.0"}
-python-magic = "^0.4.27"
-
+python = "^3.11"
+typer = {extras = ["all"], version = "^0.9.0"}
 
 [tool.poetry.group.dev.dependencies]
 
