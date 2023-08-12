@@ -1,20 +1,6 @@
+default_language_version:
+  python: python3.11
 repos:
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.2.0
-    hooks:
-      - id: autoflake
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
-    hooks:
-      - id: black
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
-    hooks:
-      - id: flake8
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
@@ -30,3 +16,21 @@ repos:
       - id: detect-private-key
       - id: fix-encoding-pragma
         args: ["--remove"]
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.7.0
+    hooks:
+    -   id: pyupgrade
+        args:
+        - --py3-plus
+        - --keep-runtime-typing
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.0.284
+    hooks:
+      - id: ruff
+        args:
+          - --fix

@@ -108,9 +108,7 @@ def replace_in_files_content(
 def generate_json(root_dir: str, replacements: list[tuple[str, str]]) -> None:
     json_path = os.path.join(root_dir, "cookiecutter.json")
     with open(json_path, "w", encoding="utf-8") as f:
-        json.dump(
-            dict((v, k) for k, v in replacements), f, ensure_ascii=False, indent=4
-        )
+        json.dump({v: k for k, v in replacements}, f, ensure_ascii=False, indent=4)
 
 
 def main(
