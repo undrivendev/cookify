@@ -25,7 +25,7 @@ so I needed a way to do it on the fly.
 
 Prerequisites: [poetry](https://python-poetry.org/)
 
-Change directory into the project one and just execute `poetry run python main.py` file
+Change directory into the project one and just execute `poetry run python src/cookify/cookify.py` file
 with these command-line arguments:
 
 1. The folder containing the project to convert
@@ -39,7 +39,7 @@ Note: only two placeholders are supported for the time being.
 Example:
 
 ```
-poetry run python main.py /work/_temp/WebApiTemplate solution_name WebApiTemplate sample_entity_name Customer
+poetry run python src/cookify/cookify.py /work/_temp/WebApiTemplate solution_name WebApiTemplate sample_entity_name Customer
 ```
 
 ## Examples
