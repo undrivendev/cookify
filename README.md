@@ -1,4 +1,4 @@
-This is a python script which transforms a project in a
+This is a CLI utility to transform a project in a
 [cookiecutter](https://www.cookiecutter.io/) template by substituting the contents in
 files and file paths with cookiecutter placeholders.
 
@@ -25,7 +25,7 @@ so I needed a way to do it on the fly.
 
 Prerequisites: [poetry](https://python-poetry.org/)
 
-Change directory into the project one and just execute `poetry run python src/cookify/cookify.py` file
+Change directory into the project one and just execute `poetry run cookify`
 with these command-line arguments:
 
 1. The folder containing the project to convert
