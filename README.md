@@ -39,7 +39,7 @@ Note: only two placeholders are supported for the time being.
 Example:
 
 ```
-poetry run python src/cookify/cookify.py /work/_temp/WebApiTemplate solution_name WebApiTemplate sample_entity_name Customer
+poetry run cookify /work/_temp/WebApiTemplate solution_name WebApiTemplate sample_entity_name Customer
 ```
 
 ## Examples

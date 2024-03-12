@@ -6,7 +6,6 @@ from collections import defaultdict
 from itertools import groupby
 
 import magic
-import typer
 
 solution_name_placeholder = "solution_name"
 
@@ -50,11 +49,11 @@ def replace_in_names(root_dir: str, replacements: list[tuple[str, str]]) -> None
         )
     )
 
-    files_levels_map = defaultdict(list)
+    files_levels_map: dict[int, list[str]] = defaultdict(list)
     for count, items in groupby(files, lambda s: s.count("/")):
         files_levels_map[count].extend(items)
 
-    dir_levels_map = defaultdict(list)
+    dir_levels_map: dict[int, list[str]] = defaultdict(list)
     for count, items in groupby(dirs, lambda s: s.count("/")):
         dir_levels_map[count].extend(items)
 
@@ -111,7 +110,7 @@ def generate_json(root_dir: str, replacements: list[tuple[str, str]]) -> None:
         json.dump({v: k for k, v in replacements}, f, ensure_ascii=False, indent=4)
 
 
-def main(
+def run(
     root_dir: str,
     placeholder_1_name: str,
     placeholder_1_value: str,
@@ -138,7 +137,3 @@ def main(
 
     # generate cookiecutter template manifest file
     generate_json(root_dir, replacements)
-
-
-if __name__ == "__main__":
-    typer.run(main)
